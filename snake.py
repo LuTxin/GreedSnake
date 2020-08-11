@@ -44,8 +44,10 @@ class Snake:
 	def updatePosition(self):
 		print(self.speed.x)
 		print(self.speed.y)
-		self.bodyList[0].x += self.speed.x
-		self.bodyList[0].y += self.speed.y
+
+		newHead = Vector(self.bodyList[0].x + self.speed.x, self.bodyList[0].y + self.speed.y)
+		self.bodyList.insert(0, newHead)
+		self.bodyList.pop(len(self.bodyList) - 1)
 
 class Main:
 	'Main'
@@ -54,16 +56,17 @@ class Main:
 	refreshSpeed = 1
 	scheduler = sched.scheduler(time.time, time.sleep)
 
-
-
 	def __init__(self, refreshSpeed = 1):
 		#init refresh speed
 		self.refreshSpeed = refreshSpeed
 		#init baord
 		self.board = Board(41, 41)
 		#init snake
-		firstBody = Vector(int(self.board.width/2), int(self.board.height/2))
-		self.snake = Snake([firstBody])
+		firstBody = Vector(int(self.board.width/2) - 1, int(self.board.height/2))
+		secondBody = Vector(int(self.board.width/2), int(self.board.height/2))
+		thirdBody = Vector(int(self.board.width/2) + 1, int(self.board.height/2))
+		self.snake = Snake([firstBody, secondBody, thirdBody])
+
 
 	def Start(self):
 		self.scheduler.run()
