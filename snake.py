@@ -38,7 +38,7 @@ class Board:
 
 class Snake:
 	'class for snake'
-	speed = Vector(1, 0)
+	speed = Vector(-1, 0)
 	def __init__(self, bodyList):
 		self.bodyList = bodyList
 	def updatePosition(self):
@@ -48,10 +48,15 @@ class Snake:
 		newHead = Vector(self.bodyList[0].x + self.speed.x, self.bodyList[0].y + self.speed.y)
 		self.bodyList.insert(0, newHead)
 		self.bodyList.pop(len(self.bodyList) - 1)
+		for i in range(1, len(self.bodyList)):
+			if(newHead.x == self.bodyList[i].x and newHead.y == self.bodyList[i].y):
+				return False
+		return True
 
 class Main:
 	'Main'
 
+	alive = True
 	count = 0
 	refreshSpeed = 1
 	scheduler = sched.scheduler(time.time, time.sleep)
@@ -65,17 +70,27 @@ class Main:
 		firstBody = Vector(int(self.board.width/2) - 1, int(self.board.height/2))
 		secondBody = Vector(int(self.board.width/2), int(self.board.height/2))
 		thirdBody = Vector(int(self.board.width/2) + 1, int(self.board.height/2))
-		self.snake = Snake([firstBody, secondBody, thirdBody])
+		forthBody = Vector(int(self.board.width/2) + 2, int(self.board.height/2))
+		fifthBody = Vector(int(self.board.width/2) + 3, int(self.board.height/2))
+		self.snake = Snake([firstBody, secondBody, thirdBody, forthBody, fifthBody])
 
 
 	def Start(self):
 		self.scheduler.run()
 
 	def Refresh(self, sc, q):
-		self.snake.updatePosition()
+		self.alive = self.snake.updatePosition()
+		self.alive = self.alive and self.Judge()
 		self.Render()
+		if(self.alive == False):
+			return
 		self.count += self.refreshSpeed
 		self.schedulerEvent = self.scheduler.enter(self.refreshSpeed, 1, self.Refresh, (sc, q))
+
+	def Judge(self):
+		if(self.snake.bodyList[0].x >= self.board.width or self.snake.bodyList[0].x < 0 
+			or self.snake.bodyList[0].y >= self.board.height or self.snake.bodyList[0].y < 0 ):
+			return False
 
 	def Render(self):
 		#clean board
@@ -90,6 +105,12 @@ class Main:
 
 		for body in self.snake.bodyList:
 			self.board.SetValue(body.y, body.x, 1)
+		self.board.SetValue(self.snake.bodyList[0].y, self.snake.bodyList[0].x, 0)
+
+		if(self.alive == False):
+			self.board.SetValue(int(self.board.height/2), int(self.board.width/2), '菜')
+			self.board.SetValue(int(self.board.height/2), int(self.board.width) - 2, '')
+
 		#draw board
 		for i in range(len(self.board.boardValue)):
 			for j in range(len(self.board.boardValue[i])):
@@ -99,20 +120,24 @@ class Main:
 	def InputReceived(self, input):
 		if(input == 'w'):
 			print('up')
-			self.snake.speed.x = 0
-			self.snake.speed.y = -1
+			if(self.snake.speed.y != 1):
+				self.snake.speed.x = 0
+				self.snake.speed.y = -1
 		elif(input == 's'):
 			print('down')
-			self.snake.speed.x = 0
-			self.snake.speed.y = 1
+			if(self.snake.speed.y != -1):
+				self.snake.speed.x = 0
+				self.snake.speed.y = 1
 		elif(input == 'a'):
 			print('left')
-			self.snake.speed.x = -1
-			self.snake.speed.y = 0
+			if(self.snake.speed.x != 1):
+				self.snake.speed.x = -1
+				self.snake.speed.y = 0
 		elif(input == 'd'):
 			print('right')
-			self.snake.speed.x = 1
-			self.snake.speed.y = 0
+			if(self.snake.speed.x != -1):
+				self.snake.speed.x = 1
+				self.snake.speed.y = 0
 
 def GameLoop(main, int_q):
 	main.schedulerEvent = main.scheduler.enter(main.refreshSpeed, 1, main.Refresh, (main.scheduler, int_q))
@@ -135,7 +160,7 @@ def InputLoop(main, out_q):
 	    termios.tcsetattr(sys.stdin, termios.TCSADRAIN, old_settings)
 
 q = Queue()
-main = Main(1)
+main = Main(0.1)
 t2 = Thread(target = GameLoop, args = (main, q))
 t2.start()
 t1 = Thread(target = InputLoop, args = (main, q))
