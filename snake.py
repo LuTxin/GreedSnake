@@ -69,6 +69,7 @@ class Snake:
 class Main:
 	'Main'
 
+	score = 0
 	currentInput = 'a'
 	meat = Vector(10, 10)
 	alive = True
@@ -80,7 +81,7 @@ class Main:
 		#init refresh speed
 		self.refreshSpeed = refreshSpeed
 		#init baord
-		self.board = Board(41, 41)
+		self.board = Board(21, 21)
 		#init snake
 		firstBody = Vector(int(self.board.width/2) - 1, int(self.board.height/2))
 		secondBody = Vector(int(self.board.width/2), int(self.board.height/2))
@@ -99,6 +100,7 @@ class Main:
 		self.alive = self.alive and self.Judge()
 		if(needNewMeat):
 			self.NewMeat()
+			self.score += 1
 		self.Render()
 		if(self.alive == False):
 			return
@@ -127,6 +129,7 @@ class Main:
 		#clean board
 		_ = os.system('clear')
 		#draw counter
+		print('score:' + str(self.score))
 		print('Time:' + str( int(self.count)))
 		print("\n")
 		#update board
