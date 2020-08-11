@@ -119,22 +119,18 @@ class Main:
 
 	def InputReceived(self, input):
 		if(input == 'w'):
-			print('up')
 			if(self.snake.speed.y != 1):
 				self.snake.speed.x = 0
 				self.snake.speed.y = -1
 		elif(input == 's'):
-			print('down')
 			if(self.snake.speed.y != -1):
 				self.snake.speed.x = 0
 				self.snake.speed.y = 1
 		elif(input == 'a'):
-			print('left')
 			if(self.snake.speed.x != 1):
 				self.snake.speed.x = -1
 				self.snake.speed.y = 0
 		elif(input == 'd'):
-			print('right')
 			if(self.snake.speed.x != -1):
 				self.snake.speed.x = 1
 				self.snake.speed.y = 0
