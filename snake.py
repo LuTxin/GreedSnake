@@ -96,7 +96,7 @@ class Main:
 		#clean board
 		_ = os.system('clear')
 		#draw counter
-		print('Time:' + str(self.count))
+		print('Time:' + str( int(self.count)))
 		print("\n")
 		#update board
 		for i in range(self.board.height):
