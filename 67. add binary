@@ -1,0 +1,19 @@
+67. add binary
+
+#改题可以用普通的竖式加法解
+#但是也可以用位操作来解
+#位操作方法就是
+# 1. 算出 a^b,如果没有carry的情况下a^b就是答案
+# 2. 算出 carry = (a&b) << 1, carry如果不为零就要再再a^b的基础上再计算（等于是算进位的部分）
+
+class Solution:
+    def addBinary(self, a: str, b: str) -> str:    
+        ans = 0
+        addWithoutCarry = int(a, 2)
+        carry = int(b, 2)
+        while carry > 0:
+            ans = addWithoutCarry ^ carry
+            carry = (addWithoutCarry & carry) << 1
+            addWithoutCarry = ans
+            
+        return bin(addWithoutCarry)[2:]

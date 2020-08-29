@@ -89,6 +89,7 @@ class Main:
 		forthBody = Vector(int(self.board.width/2) + 2, int(self.board.height/2))
 		fifthBody = Vector(int(self.board.width/2) + 3, int(self.board.height/2))
 		self.snake = Snake([firstBody, secondBody, thirdBody, forthBody, fifthBody])
+		self.NewMeat()
 
 	def Start(self):
 		self.scheduler.run()

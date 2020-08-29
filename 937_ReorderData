@@ -1,0 +1,98 @@
+from typing import List
+
+class Solution:
+    def reorderLogFiles(self, logs: List[str]) -> List[str]:
+        splitedLogsDic = dict()
+        letterLogs = []
+        digitalLogs = []
+        for log in logs:
+            splitedLog = log.split(' ')
+            
+            prefix = splitedLog[0:1]
+            tail = splitedLog[1: len(splitedLog)]
+            second = splitedLog[1]
+            
+            if repr(tail) in splitedLogsDic:
+                splitedLogsDic[repr(tail)].append(prefix)
+            else:
+                splitedLogsDic[repr(tail)] = [prefix]
+
+            if second[0] >= '0' and second[0] <= '9':
+                digitalLogs.append(tail)
+            else:
+                letterLogs.append(tail)
+        
+
+        temp = [[] for i in range(len(letterLogs))]
+        self.internalSort(letterLogs, 0, len(letterLogs) - 1, temp)
+
+        logsIndex = 0
+        for i in range(len(letterLogs)):
+            letterLog = ''
+            for j in range(len(letterLogs[i])):
+                letterLog += ' ' + letterLogs[i][j]
+            logs[logsIndex] = splitedLogsDic[repr(letterLogs[i])][-1][0] + letterLog
+            del splitedLogsDic[repr(letterLogs[i])][-1]
+            logsIndex += 1
+            
+        for i in range(len(digitalLogs)):
+            digitalLog = ''
+            for j in range(len(digitalLogs[i])):
+                digitalLog += ' ' + digitalLogs[i][j]
+            logs[logsIndex] = splitedLogsDic[repr(digitalLogs[i])][-1][0] + digitalLog
+            del splitedLogsDic[repr(digitalLogs[i])][-1]
+            logsIndex += 1
+        
+        return logs
+
+    def internalSort(self, data, head, end, temp):
+        if head < end :
+            mid = int((head + end)/2)
+            self.internalSort(data, head, mid, temp)
+            self.internalSort(data, mid + 1, end, temp)
+            self.internalMerge(data, head, mid, end, temp)
+
+
+    def internalMerge(self, data, head, mid, end, temp):
+        i = head
+        j = mid + 1
+        index = head
+
+        while i <= mid and j <= end:
+            if self.stringListCompare(data[i], data[j]) <= 0:
+                temp[index] = data[i]
+                index += 1
+                i += 1
+            elif self.stringListCompare(data[i], data[j]) > 0:
+                temp[index] = data[j]
+                index += 1
+                j += 1
+
+        if i > mid:
+            while j <= end :
+                temp[index] = data[j]
+                index += 1
+                j += 1
+        elif j > end:
+            while i <= mid:
+                temp[index] = data[i]
+                index += 1
+                i += 1
+
+        for k in range(head, end + 1):
+            data[k] = temp[k]
+
+    def stringListCompare(self, strList1, strList2) -> int:
+        minLength = min(len(strList1), len(strList2))
+        for i in range(minLength):
+            if strList1 > strList2:
+                return 1
+            elif strList1 < strList2:
+                return -1
+
+        if len(strList1) > len(strList2):
+            return 1
+        elif len(strList1) < len(strList2):
+            return -1
+        else:
+            return 0

@@ -1,0 +1,23 @@
+class Solution:
+    def isAlienSorted(self, words: List[str], order: str) -> bool:
+        if len(words) <= 1:
+            return True
+        
+        orderDic = dict()
+        for i in range(len(order)):
+            orderDic[order[i]] = i
+        
+        for i in range(len(words) - 1):
+            for j in range(max([len(words[i]), len(words[i + 1])])):
+                if j < len(words[i]) and j < len(words[i + 1]):
+                    if orderDic[words[i][j]] > orderDic[words[i + 1][j]]:
+                        return False
+                    #千万注意下面这个条件。如果字母小，直接就不用比了，跳下一组
+                    elif orderDic[words[i][j]] < orderDic[words[i + 1][j]]:
+                        break
+                elif j < len(words[i]) and j >= len(words[i + 1]):
+                    return False
+                else:
+                    break
+        
+        return True

@@ -1,0 +1,49 @@
+
+class Solution:
+    def addStrings(self, num1: str, num2: str) -> str:
+        #先考虑短数
+        #不进位
+        #进位
+        #短数做完以后看最后的进位对剩下长数的影响
+        
+        if len(num1) > len(num2):
+            return self.helper(list(num1), list(num2))
+        else:
+            return self.helper(list(num2), list(num1))
+    
+    def helper(self, big: list, small: list) -> str:
+        tempSmall = 0
+        tempBig = 0
+        total = 0
+        increase = 0
+        smallLastIndex = len(small) - 1
+        bigLastIndex = len(big) - 1
+        for i in range(len(small)):
+            tempSmall = int(small[smallLastIndex - i])
+            tempBig = int(big[bigLastIndex - i])
+            total = tempSmall + tempBig + increase
+            if total >= 10:
+                increase = 1
+            else:
+                increase = 0
+            
+            big[bigLastIndex - i] = str(total % 10)
+        
+        index = 1
+        while increase == 1 and bigLastIndex - smallLastIndex - index >= 0:
+            total = 1 + int(big[bigLastIndex - smallLastIndex - index])
+            if total >= 10:
+                increase = 1
+            else:
+                increase = 0
+            
+            big[bigLastIndex - smallLastIndex - index] = str(total%10)
+            index += 1
+        
+        if increase == 1:
+            big.insert(0, '1')
+            
+        return "".join(big)
+            
+            
+        
