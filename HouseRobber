@@ -1,0 +1,46 @@
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if len(nums) <= 0:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        
+        storage = [-1 for i in range(len(nums))]
+        self.rob2(nums, 0, storage)
+        return max(storage[0], storage[1])
+            
+    def rob2(self, nums: List[int],i: int, storage: List[int]) -> int:
+        if storage[i] != -1:
+            return storage[i]
+        
+        if len(nums) - 1 - i < 0:
+            return 0 
+        elif len(nums) - 1 - i == 0:
+            storage[i] = nums[i]
+            return storage[i] 
+        elif len(nums) - 1 - i == 1:
+            storage[i] = max(nums[i],nums[i+1])
+            return storage[i] 
+        elif len(nums) - 1 - i == 2:
+            storage[i] = max(nums[i] + nums[i+2], nums[i + 1])
+            return storage[i] 
+        
+        option1 = 0
+        if storage[i + 2] == -1:
+            option1 = nums[i] + self.rob2(nums, i + 2, storage)
+        else:
+            option1 = nums[i] + storage[i + 2]
+            
+        option2 = 0
+        if storage[i + 3] == -1:
+            option2 = nums[i + 1] + self.rob2(nums, i + 3, storage)
+        else:
+            option2 = nums[i + 1] + storage[i + 3]
+            
+        storage[i] = max(option1, option2)
+        return storage[i] 
+    
+    
+        
+        
+        

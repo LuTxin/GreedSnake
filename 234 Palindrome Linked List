@@ -1,0 +1,55 @@
+#先用runner找出中点
+#然后把后面那条反转
+#再一个一个数过来
+#T:O(N) S:O(1)
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def isPalindrome(self, head: ListNode) -> bool:
+        if head is None or head.next is None:
+            return True
+        
+        #1 2 5 9 5 2 1
+    
+        h1 = head
+        h2 = head
+        
+        while True:
+            h1 = h1.next
+            h2 = h2.next
+            if h2.next is None:
+                break;
+            h2 = h2.next
+            if h2.next is None:
+                h1 = h1.next
+                break;
+                
+        h1 = self.inverseLinkedList(h1)
+        h2 = head
+        
+        while h1 is not None:
+            if h1.val != h2.val:
+                return False
+            h1 = h1.next
+            h2 = h2.next
+        
+        return True
+            
+    def inverseLinkedList(self, head: ListNode) -> ListNode:
+            newHead = head
+            front = head.next
+            head = front
+            newHead.next = None
+            while head is not None:
+                front = head.next
+                head.next = newHead
+                newHead = head
+                head = front
+                
+            return newHead
+                
+            

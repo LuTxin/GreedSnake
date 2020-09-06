@@ -1,0 +1,46 @@
+#注意这题在写入时候的一些问题
+#要从个位开始写，还不能往前插入，所以用log来提前定位有多少位需要写。
+#特别注意log 10 = integer的情况，要多加一位
+#还有只有单个字母时候不写数字，所以log 1 的情况不用多加一位。
+class Solution:
+    def compress(self, chars: List[str]) -> int:
+        if len(chars) < 2:
+            return len(chars)
+        
+        index = 0
+        char = chars[0]
+        repeat = 1
+        for i in range(1, len(chars)):
+            if chars[i] != char:
+                chars[index] = char
+                index += 1
+                bits = math.ceil(math.log(repeat,10))
+                if bits == int(math.log(repeat,10)) and repeat != 1:
+                    bits += 1
+                
+                for j in range(bits - 1, -1, -1):
+                    chars[index + j] = str(repeat%10)
+                    repeat = int(repeat/10)
+                
+                index += bits
+                char = chars[i]
+                repeat = 1
+            else:
+                repeat += 1
+        
+        chars[index] = char
+        index += 1
+        if repeat > 1:
+            bits = math.ceil(math.log(repeat,10))
+            if bits == int(math.log(repeat,10)) and repeat != 1:
+                bits += 1
+            
+                
+            for j in range(bits - 1, -1, -1):
+                chars[index + j] = str(repeat%10)
+                repeat = int(repeat/10)
+                
+            index += bits
+                
+            
+        return index

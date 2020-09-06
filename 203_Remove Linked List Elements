@@ -1,0 +1,43 @@
+#注意正常情况下不要把原始head给移动了。要用额外的before指针来理顺链表。
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def removeElements(self, head: ListNode, val: int) -> ListNode:
+        # null
+        # 6
+        # 6 6
+        # 6 3 6
+        # 6 3 3
+        # 3 3 6
+        
+        if head is None:
+            return head
+        elif head.next is None:
+            if head.val == val:
+                head = None
+            return head
+        elif head.next is not None:
+            after = head.next
+            while head is not None and head.val == val:
+                head = head.next
+                if after is not None:
+                    after = after.next
+            if head is None or after is None:
+                return head
+            
+            before = head
+            while after is not None:
+                if after.val == val:
+                    before.next = after.next
+                    after = before.next
+                    continue
+                before = before.next
+                after = before.next
+            return head
+                
+                    
+                
